@@ -1,5 +1,5 @@
 class GameController < ApplicationController
-
+  skip_before_action :verify_authenticity_token
   def show
 
   end
@@ -16,7 +16,7 @@ class GameController < ApplicationController
   def updatebase
     unless checkparams
       # add more authorization here
-      if params['base'].match? (/layer.putTilesAt\(buildings_type\['.+'\],\d+,\d+\);/) ## checking if the command matches our draw command
+      if params['base'].match? (/layer3.putTilesAt\(buildings_type\['.+'\],\d+,\d+\);/) ## checking if the command matches our draw command
         user = User.find(params[:id].to_i)
         user.base_commands << params['base']
         user.save!

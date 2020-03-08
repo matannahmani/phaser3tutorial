@@ -14,7 +14,6 @@ const config = {
 }
 function preload() {
       this.load.image('tiles', '../../16x16s.png'); // my tilemap image
-      // this.load.image('tiles2', '../mt2.png');
       this.load.tilemapTiledJSON('tilemap', '../../16x16s.json'); // my tilemap json
 
       // two plugins for interface (touch and UI framework)
@@ -23,7 +22,6 @@ function preload() {
       var url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexpinchplugin.min.js';
       this.load.plugin('rexpinchplugin', url, true);
       this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
-      this.load.image('btn', '../../basepop.png');
     }
 
 function create() {
@@ -32,8 +30,6 @@ function create() {
 
       // resizeApp();
       buildings_type = buildingList();
-
-      this.add.image(0, 0, 'map').setOrigin(0);
 
       const map = this.make.tilemap({ key: 'tilemap' });
 
@@ -49,8 +45,8 @@ function create() {
       // Loading base , setting camera , setting up drag screen
       isplacing = [false]
       loadBase();
-      const checkuser = checkUser();
-      placeables = checkuser; // [true/false,name,amountLeft]
+      // const checkuser = checkUser();
+      placeables = [[false,'Barracks',2],[false,'Medic',2],[false,'Boat',2],[false,'Weel',2]]; // [true/false,name,amountLeft]
       buttons = this.rexUI.add.buttons({
           anchor: {
               left: 'left+10',
@@ -152,7 +148,7 @@ function update() {
   }
 }
 
-  function ifhasTilehelp(cords,height,width){
+  function ifhasTilehelp(cords,height,width){ // check if location already has tile
     let bool = false;
     for(let i=0;i< height;i++)
       for(let j=0;j< width;j++)
@@ -162,12 +158,12 @@ function update() {
  // Fetching user buildings commands, then drawing
 
 function loadBase() {
-  fetch('../base')
+  fetch('../base/1')
     .then((response) => {
       return response.json();
     })
     .then((commands) => {
-      commands.msg.forEach((command) =>{
+      commands.arr.forEach((command) =>{
         eval(command);
       })
     });
@@ -175,25 +171,25 @@ function loadBase() {
 
 // Fetching if user bought new structure, then enable drawing
 
-function checkUser() {
-  const isplacing = [];
-  fetch('../base/checkupdate')
-    .then((response) => {
-      return response.json();
-    })
-    .then((buildings) => {
-      if (buildings.result === true)
-        buildings.msg.forEach((build) =>{
-          isplacing.push([false,Object.keys(build)[0],Object.values(build)[0]]);
-        });
-    });
-    return isplacing;
-}
+// function checkUser() {
+//   const isplacing = [];
+//   fetch('../base/checkupdate')
+//     .then((response) => {
+//       return response.json();
+//     })
+//     .then((buildings) => {
+//       if (buildings.result === true)
+//         buildings.msg.forEach((build) =>{
+//           isplacing.push([false,Object.keys(build)[0],Object.values(build)[0]]);
+//         });
+//     });
+//     return isplacing;
+// }
 
 // Sending new draw command to the server to be saved for next load.
 function updateBase(data) {
     // Default options are marked with *
-    fetch('../base', {
+    fetch('../base/1', {
       method: 'PATCH', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, *cors, same-origin
       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -207,7 +203,7 @@ function updateBase(data) {
       body: JSON.stringify(data) // body data type must match "Content-Type" header
     }).then((response) => {
     return response.json().then((data) => {
-      if(data['error'] == '501')
+      if(data['response'] == '500')
         location.reload();
     }) // parses JSON response into native JavaScript objects
   });
