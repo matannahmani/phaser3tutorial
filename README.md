@@ -1,24 +1,4 @@
-# README
-
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+This is tutorial for creating dynamic maps in phaser3 allowing to save and load changes made in to the map.
+Each user has it's own map.
+you can read more at dev.to :)
+I have added extra fetuares for your plesaure!
